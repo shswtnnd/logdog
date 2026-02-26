@@ -2,9 +2,6 @@
 
 ## Steps to Reproduce:
 - I am officially a Rust CLI developer
-- found a bug in button
-- no explot found
-- status code broken
 
 **Terminal Evidence:**
 ```bash
