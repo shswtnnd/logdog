@@ -1,8 +1,8 @@
-use std::fs::File;
 use std::io::Write;
 use std::fs::{OpenOptions};
 use std::io::{self, Read};
 use clap::{Parser, Subcommand};
+mod commands;
 #[derive(Parser)]
 #[command(name = "logdog")]
 #[command(version = "1.0")]
@@ -14,20 +14,20 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     //intializes a new report.md file
-    init,
-    step {
+    Init,
+    Step {
         description:String,
     },
-    fetch,
+    Fetch,
+    View,
 }
 fn main() {
     let cli = Cli::parse();
     match &cli.command {
-        Commands::init => {
-            let mut file = File::create("report.md").expect("ERROR! Failed to create file");
-            file.write_all(b"# Vulnerability Report\n\n## Steps to Reproduce:\n").expect("Failed to write");
+        Commands::Init => {
+            commands::init::execute();
         }
-        Commands::step{description}=>{
+        Commands::Step{description}=>{
             let mut file = match OpenOptions::new().append(true).open("report.md") {
                 Ok(f)=> f,
                 Err(_)=>{
@@ -39,7 +39,7 @@ fn main() {
             file.write_all(formatted_step.as_bytes()).expect("Failed to write step");
             println!("✅ Step logged: {}", description);
         }
-        Commands::fetch => {
+        Commands::Fetch => {
             let mut input_data = String::new();
             io::stdin().read_to_string(&mut input_data).expect("Failed to read terminal output");
             //Open the file to append
@@ -54,6 +54,21 @@ fn main() {
             //Write to the file
             file.write_all(formatted_code_block.as_bytes()).expect("Failed to write to report");
             println!("LogDog fetched your terminal output.");
+        }
+        Commands::View => {
+            match std::fs::read_to_string("report.md") {
+                //take the massive string of text and print it.
+                Ok(content) => {
+                    println!("\n==================================");
+                    println!("REPORT PREVIEW");
+                    println!("==================================\n");
+                    println!("{}", content);
+                    println!("==================================\n");
+                }
+                Err(_) => {
+                    eprintln!("❌ Error: 'report.md' not found. Run 'logdog init' first!");
+                }
+            }
         }
     }
 }
