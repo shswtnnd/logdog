@@ -38,8 +38,8 @@ Once the core engine is flawless, we will introduce:
 
 ---
 
-## 🛠️ Installation (Coming Soon)
-*(LogDog is currently in active development. Binaries and Cargo installation commands will be provided upon the V1.0 release.)*
+## 🛠️ Installation
+cargo install logdog
 
 ## 🤝 Contributing
 This tool is built by the community, for the community. If you are a hacker tired of formatting Markdown tables, drop an issue with your requested workflow feature.
